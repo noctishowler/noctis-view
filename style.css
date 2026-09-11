@@ -1,5 +1,11 @@
+/* =========================================================
+   NOCTIS VIEW
+   Main stylesheet
+========================================================= */
+
+
 /* -----------------------------
-   GLOBAL
+   GLOBAL RESET / BASE
 ----------------------------- */
 
 * {
@@ -32,7 +38,7 @@ body {
 
 
 /* -----------------------------
-   APP
+   APP SHELL
 ----------------------------- */
 
 #app {
@@ -99,7 +105,7 @@ header {
 
 
 /* -----------------------------
-   VIEWPORT
+   MAIN VIEWPORT
 ----------------------------- */
 
 .viewport {
@@ -136,7 +142,7 @@ header {
 
 
 /* -----------------------------
-   STANDBY
+   STANDBY VIEW
 ----------------------------- */
 
 #standby {
@@ -153,11 +159,6 @@ header {
 
   background: #020203;
 }
-
-
-/* -----------------------------
-   STANDBY GIF
------------------------------ */
 
 #standbyGif {
   position: absolute;
@@ -256,6 +257,9 @@ header {
   cursor: pointer;
 }
 
+
+/* Active camera */
+
 #cameraNav button.active {
   border-color:
     rgba(183, 113, 226, 0.75);
@@ -271,8 +275,18 @@ header {
 }
 
 
+/* Remove native browser focus outline.
+   Camera selection is already shown
+   by the purple active state. */
+
+#cameraNav button:focus,
+#cameraNav button:focus-visible {
+  outline: none;
+}
+
+
 /* -----------------------------
-   STATUS
+   STATUS BAR
 ----------------------------- */
 
 .controls {
@@ -336,8 +350,13 @@ footer {
 }
 
 
-/* -----------------------------
+/* =========================================================
    DIAGNOSTICS DRAWER
+========================================================= */
+
+
+/* -----------------------------
+   DRAWER CONTAINER
 ----------------------------- */
 
 #toolsDrawer {
@@ -399,7 +418,7 @@ footer {
 
 
 /* -----------------------------
-   TOOLS HEADER
+   DRAWER HEADER
 ----------------------------- */
 
 .tools-header {
@@ -483,7 +502,7 @@ footer {
 
 
 /* -----------------------------
-   TOOL ACTION BUTTONS
+   TOOL ACTION ROW
 ----------------------------- */
 
 .tool-actions {
@@ -528,12 +547,7 @@ footer {
 }
 
 
-/* -----------------------------
-   SELECTED TOOL BUTTON
-
-   This is the button currently
-   selected by the Neural Band.
------------------------------ */
+/* Selected tool button */
 
 .tool-actions button.tool-focused {
   outline:
@@ -555,9 +569,7 @@ footer {
 }
 
 
-/* -----------------------------
-   BUTTON PRESS
------------------------------ */
+/* Tool button press */
 
 .tool-actions button:active {
   transform:
@@ -565,11 +577,9 @@ footer {
 }
 
 
-/* -----------------------------
-   ACCESSIBILITY / FOCUS
------------------------------ */
+/* Tool keyboard focus */
 
-button:focus-visible {
+.tool-actions button:focus-visible {
   outline:
     2px solid #c88ceb;
 
@@ -578,9 +588,9 @@ button:focus-visible {
 }
 
 
-/* -----------------------------
-   SMALL DISPLAY ADJUSTMENTS
------------------------------ */
+/* =========================================================
+   RESPONSIVE / SMALL DISPLAY
+========================================================= */
 
 @media (
   max-height: 400px
@@ -593,15 +603,18 @@ button:focus-visible {
       5px 10px;
   }
 
+
   #cameraNav {
     padding:
       4px 7px;
   }
 
+
   #cameraNav button {
     padding:
       5px 2px;
   }
+
 
   .controls {
     min-height: 20px;
@@ -610,6 +623,7 @@ button:focus-visible {
       3px 8px;
   }
 
+
   footer {
     min-height: 17px;
 
@@ -617,28 +631,34 @@ button:focus-visible {
       3px 6px;
   }
 
+
   #toolsDrawer {
     padding:
       5px 10px 9px;
   }
+
 
   .tools-handle {
     margin-bottom:
       5px;
   }
 
+
   .tools-header {
     margin-bottom:
       6px;
   }
 
+
   .diag-grid {
     gap: 4px;
   }
 
+
   .diag-grid div {
     padding: 5px;
   }
+
 
   .tool-actions {
     gap: 4px;
@@ -646,6 +666,7 @@ button:focus-visible {
     margin-top:
       6px;
   }
+
 
   .tool-actions button {
     padding:
@@ -655,9 +676,9 @@ button:focus-visible {
 }
 
 
-/* -----------------------------
+/* =========================================================
    REDUCED MOTION
------------------------------ */
+========================================================= */
 
 @media (
   prefers-reduced-motion:
