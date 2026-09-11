@@ -550,26 +550,32 @@ feed.addEventListener(
 ----------------------------- */
 
 /*
- * Main view:
+ * MAIN VIEW
  *
- * Left  = next camera
- * Right = previous camera
- * Down  = open diagnostics
+ * Swipe right:
+ * FORWARD → RIGHT → REAR →
+ * LEFT → FORWARD
+ *
+ * Swipe left:
+ * FORWARD → LEFT → REAR →
+ * RIGHT → FORWARD
+ *
+ * Down = open diagnostics
  *
  *
- * Diagnostics view:
+ * DIAGNOSTICS
  *
  * Down = enter button row
  * Up   = leave button row
  *
  *
- * Button row:
+ * BUTTON ROW
  *
  * Left / Right = choose button
  * Enter        = activate button
  *
  *
- * If not in button row:
+ * DIAGNOSTICS MAIN LEVEL
  *
  * Up = close diagnostics
  */
@@ -598,7 +604,7 @@ document.addEventListener(
         } else {
 
           setCamera(
-            current + 1
+            current - 1
           );
 
         }
@@ -621,7 +627,7 @@ document.addEventListener(
         } else {
 
           setCamera(
-            current - 1
+            current + 1
           );
 
         }
@@ -811,15 +817,23 @@ addEventListener(
 
       if (toolsOpen) {
 
+        /*
+         * Diagnostics navigation
+         * remains normal:
+         *
+         * swipe left  = previous
+         * swipe right = next
+         */
+
         if (toolsActionMode) {
 
           if (dx < 0) {
 
-            nextToolAction();
+            previousToolAction();
 
           } else {
 
-            previousToolAction();
+            nextToolAction();
 
           }
 
@@ -828,34 +842,25 @@ addEventListener(
       } else {
 
         /*
-         * Swipe left:
+         * CAMERA NAVIGATION
          *
-         * FORWARD
-         * RIGHT
-         * REAR
-         * LEFT
-         * FORWARD...
+         * Swipe left:
+         * move toward LEFT.
+         *
+         * Swipe right:
+         * move toward RIGHT.
          */
 
         if (dx < 0) {
 
           setCamera(
-            current + 1
+            current - 1
           );
 
-        }
-
-
-        /*
-         * Swipe right:
-         *
-         * reverse loop
-         */
-
-        else {
+        } else {
 
           setCamera(
-            current - 1
+            current + 1
           );
 
         }
@@ -878,6 +883,14 @@ addEventListener(
 /* -----------------------------
    WAKE / RESUME
 ----------------------------- */
+
+/*
+ * Whenever Noctis View wakes
+ * or becomes visible again:
+ *
+ * close diagnostics
+ * return to FORWARD
+ */
 
 document.addEventListener(
   'visibilitychange',
