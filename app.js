@@ -29,10 +29,6 @@ const mode =
 /*
  * Pi camera addresses will eventually
  * be added here.
- *
- * Example:
- *
- * FORWARD: "https://pi-address/forward"
  */
 
 const cameraFeeds = {
@@ -93,11 +89,7 @@ function setCamera(index) {
   }
 
 
-  if (typeof updateDiagnostics === 'function') {
-
-    updateDiagnostics();
-
-  }
+  updateDiagnostics();
 
 }
 
@@ -129,12 +121,7 @@ function showStandby(cameraName) {
   status.textContent =
     `${cameraName} feed unavailable`;
 
-
-  if (typeof updateDiagnostics === 'function') {
-
-    updateDiagnostics();
-
-  }
+  updateDiagnostics();
 
 }
 
@@ -190,7 +177,7 @@ function connectFeed(
 
 /*
  * If a stream dies after starting,
- * immediately return to standby.
+ * return to standby.
  */
 
 feed.addEventListener(
@@ -206,7 +193,7 @@ feed.addEventListener(
 
 
 /* -----------------------------
-   BUTTON CONTROLS
+   CAMERA BUTTONS
 ----------------------------- */
 
 buttons.forEach(
@@ -422,8 +409,9 @@ addEventListener(
 );
 
 
-/* Keep diagnostics updated
- * while video state changes.
+/*
+ * Keep diagnostics updated
+ * as the video state changes.
  */
 
 feed.addEventListener(
@@ -448,8 +436,96 @@ feed.addEventListener(
 
 
 /* -----------------------------
-   SWIPE CONTROLS
+   META DISPLAY CONTROLS
 ----------------------------- */
+
+/*
+ * Meta Display / Neural Band:
+ *
+ * ArrowLeft  = next camera
+ * ArrowRight = previous camera
+ * ArrowDown  = open tools
+ * ArrowUp    = close tools
+ */
+
+document.addEventListener(
+  'keydown',
+  event => {
+
+    switch (
+      event.key
+    ) {
+
+
+      case 'ArrowLeft':
+
+        event.preventDefault();
+
+        if (!toolsOpen) {
+
+          setCamera(
+            current + 1
+          );
+
+        }
+
+        break;
+
+
+      case 'ArrowRight':
+
+        event.preventDefault();
+
+        if (!toolsOpen) {
+
+          setCamera(
+            current - 1
+          );
+
+        }
+
+        break;
+
+
+      case 'ArrowDown':
+
+        event.preventDefault();
+
+        if (!toolsOpen) {
+
+          openTools();
+
+        }
+
+        break;
+
+
+      case 'ArrowUp':
+
+        event.preventDefault();
+
+        if (toolsOpen) {
+
+          closeTools();
+
+        }
+
+        break;
+
+    }
+
+  }
+);
+
+
+/* -----------------------------
+   TOUCH / POINTER CONTROLS
+----------------------------- */
+
+/*
+ * Keep browser / phone swipe
+ * controls available for testing.
+ */
 
 let pointerStartX =
   null;
@@ -479,7 +555,11 @@ addEventListener(
     if (
       pointerStartX === null ||
       pointerStartY === null
-    ) return;
+    ) {
+
+      return;
+
+    }
 
 
     const dx =
@@ -492,10 +572,7 @@ addEventListener(
 
 
     /*
-     * Vertical gestures:
-     *
-     * swipe down = open tools
-     * swipe up   = close tools
+     * Vertical swipe.
      */
 
     if (
@@ -506,11 +583,19 @@ addEventListener(
 
       if (dy > 0) {
 
-        openTools();
+        if (!toolsOpen) {
+
+          openTools();
+
+        }
 
       } else {
 
-        closeTools();
+        if (toolsOpen) {
+
+          closeTools();
+
+        }
 
       }
 
@@ -527,8 +612,15 @@ addEventListener(
 
 
     /*
-     * Horizontal camera switching
-     * is disabled while tools are open.
+     * Horizontal swipe.
+     *
+     * Continuous looping:
+     *
+     * FORWARD
+     * RIGHT
+     * REAR
+     * LEFT
+     * FORWARD
      */
 
     if (
@@ -538,31 +630,13 @@ addEventListener(
       Math.abs(dy)
     ) {
 
-      /*
-       * Swipe left:
-       *
-       * Forward
-       * Right
-       * Rear
-       * Left
-       */
-
       if (dx < 0) {
 
         setCamera(
           current + 1
         );
 
-      }
-
-
-      /*
-       * Swipe right:
-       *
-       * reverse direction
-       */
-
-      else {
+      } else {
 
         setCamera(
           current - 1
@@ -588,9 +662,11 @@ addEventListener(
 ----------------------------- */
 
 /*
- * Whenever the web app becomes
- * visible again, return to the
- * forward camera.
+ * When the web app becomes
+ * visible again:
+ *
+ * close tools
+ * return to Forward
  */
 
 document.addEventListener(
