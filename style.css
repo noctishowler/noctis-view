@@ -1,101 +1,147 @@
+/* -----------------------------
+   GLOBAL
+----------------------------- */
+
 * {
   box-sizing: border-box;
 }
 
 html,
 body {
-  margin: 0;
   width: 100%;
   height: 100%;
-  background: #050607;
-  color: #eeeeee;
-  font-family: system-ui, -apple-system, sans-serif;
+
+  margin: 0;
+  padding: 0;
+
   overflow: hidden;
+
+  background: #020203;
+
+  color: #d5c4df;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
 }
 
 body {
-  display: grid;
-  place-items: center;
+  touch-action: none;
 }
 
-/* APP */
+
+/* -----------------------------
+   APP
+----------------------------- */
 
 #app {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+
   width: 100vw;
   height: 100vh;
 
-  display: grid;
-
-  grid-template-rows:
-    auto
-    1fr
-    auto
-    auto
-    auto;
+  overflow: hidden;
 
   background:
-    radial-gradient(
-      circle at 50% 40%,
-      #18131d 0%,
-      #08090b 55%,
-      #020303 100%
+    linear-gradient(
+      180deg,
+      #08060a 0%,
+      #020203 100%
     );
 }
 
-/* HEADER */
+
+/* -----------------------------
+   HEADER
+----------------------------- */
 
 header {
   display: flex;
+
+  flex: 0 0 auto;
+
+  align-items: center;
   justify-content: space-between;
 
-  padding: 12px 16px;
+  min-height: 34px;
 
-  font-size: 12px;
-  letter-spacing: 0.16em;
+  padding:
+    7px 12px;
+
+  border-bottom:
+    1px solid #29232e;
+
+  background:
+    rgba(8, 6, 10, 0.96);
 }
 
 .brand {
-  font-weight: 800;
+  color: #c99be8;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  letter-spacing: 0.16em;
 }
 
 .mode {
-  color: #b48ad1;
+  color: #756c7b;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 0.14em;
 }
 
-/* VIEWPORT */
+
+/* -----------------------------
+   VIEWPORT
+----------------------------- */
 
 .viewport {
   position: relative;
 
-  margin: 0 12px;
+  flex: 1 1 auto;
 
-  border: 1px solid #463b50;
-  border-radius: 14px;
-
-  overflow: hidden;
   min-height: 0;
 
-  background:
-    radial-gradient(
-      circle at center,
-      #151019,
-      #050607 70%
-    );
+  overflow: hidden;
+
+  background: #020203;
 }
 
-video {
+
+/* -----------------------------
+   VIDEO FEED
+----------------------------- */
+
+#feed {
+  position: absolute;
+
+  inset: 0;
+
+  display: none;
+
   width: 100%;
   height: 100%;
 
-  object-fit: cover;
+  object-fit: contain;
 
-  display: none;
+  background: #020203;
 }
 
-/* STANDBY */
+
+/* -----------------------------
+   STANDBY
+----------------------------- */
 
 #standby {
   position: absolute;
+
   inset: 0;
 
   display: flex;
@@ -104,627 +150,18 @@ video {
   justify-content: center;
 
   overflow: hidden;
+
+  background: #020203;
 }
 
-/* faint HUD grid */
 
-#standby::before {
-  content: "";
-
-  position: absolute;
-  inset: 0;
-
-  opacity: 0.08;
-
-  background-image:
-
-    linear-gradient(
-      rgba(160, 110, 200, 0.25) 1px,
-      transparent 1px
-    ),
-
-    linear-gradient(
-      90deg,
-      rgba(160, 110, 200, 0.25) 1px,
-      transparent 1px
-    );
-
-  background-size: 34px 34px;
-}
-
-/* SCANNING LINE */
-
-.scanline {
-  position: absolute;
-
-  left: 0;
-  right: 0;
-
-  height: 2px;
-
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(180, 120, 235, 0.75),
-      transparent
-    );
-
-  box-shadow:
-    0 0 12px rgba(180, 120, 235, 0.6);
-
-  animation:
-    scan 4s linear infinite;
-
-  opacity: 0.65;
-}
-
-@keyframes scan {
-
-  0% {
-    top: -5%;
-    opacity: 0;
-  }
-
-  10% {
-    opacity: 0.7;
-  }
-
-  90% {
-    opacity: 0.7;
-  }
-
-  100% {
-    top: 105%;
-    opacity: 0;
-  }
-
-}
-
-/* PULSE RINGS */
-
-.pulse-ring {
-  position: absolute;
-
-  width: 34vmin;
-  height: 34vmin;
-
-  max-width: 210px;
-  max-height: 210px;
-
-  border-radius: 50%;
-
-  border:
-    1px solid
-    rgba(171, 112, 214, 0.45);
-
-  animation:
-    pulseRing 3s ease-out infinite;
-}
-
-.ring-two {
-  animation-delay: 1.5s;
-}
-
-@keyframes pulseRing {
-
-  0% {
-    transform: scale(0.65);
-    opacity: 0.55;
-  }
-
-  100% {
-    transform: scale(1.8);
-    opacity: 0;
-  }
-
-}
-
-/* NOCTIS WOLF */
-
-.wolf {
-  position: relative;
-
-  width: 170px;
-  height: 170px;
-
-  display: flex;
-  justify-content: center;
-
-  filter:
-    drop-shadow(
-      0 0 18px
-      rgba(137, 74, 180, 0.22)
-    );
-
-  animation:
-    wolfBreath
-    3.2s ease-in-out infinite;
-}
-
-@keyframes wolfBreath {
-
-  0%,
-  100% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.025);
-  }
-
-}
-
-/* EARS */
-
-.ear {
-  position: absolute;
-
-  width: 55px;
-  height: 82px;
-
-  top: 1px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #17131a,
-      #08090a
-    );
-
-  border:
-    1px solid
-    rgba(160, 110, 195, 0.35);
-
-  z-index: 1;
-}
-
-.ear-left {
-
-  left: 26px;
-
-  clip-path:
-    polygon(
-      5% 100%,
-      30% 0%,
-      100% 82%
-    );
-
-}
-
-.ear-right {
-
-  right: 26px;
-
-  clip-path:
-    polygon(
-      0% 82%,
-      70% 0%,
-      95% 100%
-    );
-
-}
-
-/* HEAD */
-
-.wolf-head {
-  position: absolute;
-
-  top: 43px;
-
-  width: 138px;
-  height: 110px;
-
-  border-radius:
-    48% 48% 42% 42%;
-
-  background:
-
-    radial-gradient(
-      ellipse at center 45%,
-      #151218 0%,
-      #08090a 62%,
-      #020303 100%
-    );
-
-  border:
-    1px solid
-    rgba(142, 95, 175, 0.25);
-
-  box-shadow:
-
-    inset 0 -20px 35px
-    rgba(0, 0, 0, 0.75),
-
-    0 0 28px
-    rgba(104, 55, 140, 0.14);
-
-  z-index: 2;
-}
-
-/* EYES */
-
-.eye {
-  position: absolute;
-
-  width: 34px;
-  height: 10px;
-
-  top: 42px;
-
-  border-radius: 60%;
-
-  background:
-    linear-gradient(
-      90deg,
-      #5d2a87,
-      #c889ff,
-      #6a3590
-    );
-
-  box-shadow:
-
-    0 0 6px #b970e9,
-
-    0 0 14px
-    rgba(177, 94, 225, 0.85),
-
-    0 0 28px
-    rgba(154, 71, 207, 0.35);
-
-  animation:
-    eyes 3.6s ease-in-out infinite;
-}
-
-.eye-left {
-  left: 23px;
-
-  transform:
-    rotate(7deg);
-}
-
-.eye-right {
-  right: 23px;
-
-  transform:
-    rotate(-7deg);
-}
-
-@keyframes eyes {
-
-  0%,
-  42%,
-  48%,
-  100% {
-
-    height: 10px;
-
-    filter:
-      brightness(1);
-
-  }
-
-  45% {
-
-    height: 1px;
-
-    filter:
-      brightness(0.7);
-
-  }
-
-  70% {
-
-    filter:
-      brightness(1.35);
-
-  }
-
-}
-
-/* MUZZLE */
-
-.muzzle {
-  position: absolute;
-
-  width: 48px;
-  height: 31px;
-
-  left: 50%;
-  bottom: 10px;
-
-  transform:
-    translateX(-50%);
-
-  border-radius:
-    45% 45% 55% 55%;
-
-  background:
-    linear-gradient(
-      #0a0a0b,
-      #030304
-    );
-
-  opacity: 0.95;
-}
-
-/* INFORMATION */
-
-.standby-info {
-  position: absolute;
-
-  left: 0;
-  right: 0;
-
-  bottom: 10%;
-
-  text-align: center;
-
-  z-index: 10;
-}
-
-.camera-label {
-
-  color: #8d8294;
-
-  font-size: 11px;
-
-  letter-spacing: 0.22em;
-
-  margin-bottom: 4px;
-}
-
-.standby-title {
-
-  color: #d7b7ef;
-
-  font-weight: 800;
-
-  font-size:
-    clamp(
-      17px,
-      5vw,
-      28px
-    );
-
-  letter-spacing: 0.3em;
-
-  text-shadow:
-    0 0 14px
-    rgba(173, 105, 220, 0.45);
-
-}
-
-.standby-message {
-
-  margin-top: 5px;
-
-  color: #827987;
-
-  font-size: 10px;
-
-  letter-spacing: 0.2em;
-
-}
-
-/* ACTIVITY DOTS */
-
-.activity {
-
-  margin-top: 9px;
-
-  display: flex;
-
-  justify-content: center;
-
-  gap: 5px;
-
-}
-
-.activity span {
-
-  width: 4px;
-  height: 4px;
-
-  border-radius: 50%;
-
-  background: #ad75d5;
-
-  box-shadow:
-    0 0 6px
-    rgba(173, 117, 213, 0.8);
-
-  animation:
-    dotPulse
-    1.2s ease-in-out infinite;
-
-}
-
-.activity span:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.activity span:nth-child(3) {
-  animation-delay: 0.4s;
-}
-
-@keyframes dotPulse {
-
-  0%,
-  100% {
-
-    opacity: 0.2;
-
-    transform:
-      scale(0.7);
-
-  }
-
-  50% {
-
-    opacity: 1;
-
-    transform:
-      scale(1.25);
-
-  }
-
-}
-
-/* CAMERA NAV */
-
-nav {
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(4, 1fr);
-
-  gap: 6px;
-
-  padding:
-    10px 12px 5px;
-
-}
-
-button {
-
-  border:
-    1px solid #3b3540;
-
-  background:
-    #111216;
-
-  color:
-    #bbbbbb;
-
-  border-radius:
-    9px;
-
-  padding:
-    10px 5px;
-
-  font:
-    inherit;
-
-}
-
-nav button.active {
-
-  border-color:
-    #a77bc5;
-
-  color:
-    #ffffff;
-
-  background:
-    #241b2b;
-
-  box-shadow:
-    inset 0 0 12px
-    rgba(142, 82, 183, 0.18);
-
-}
-
-/* STATUS */
-
-.controls {
-
-  display: flex;
-
-  justify-content: center;
-  align-items: center;
-
-  padding:
-    5px 12px;
-
-  font-size:
-    12px;
-
-  color:
-    #96919a;
-
-}
-
-/* FOOTER */
-
-footer {
-
-  text-align:
-    center;
-
-  padding:
-    7px 12px 12px;
-
-  color:
-    #77717c;
-
-  font-size:
-    11px;
-
-  letter-spacing:
-    0.04em;
-
-}
-
-/* SMALL DISPLAY MODE */
-
-@media (max-height: 360px) {
-
-  header {
-
-    padding:
-      6px 12px;
-
-  }
-
-  .viewport {
-
-    margin:
-      0 8px;
-
-  }
-
-  .wolf {
-
-    transform:
-      scale(0.72);
-
-  }
-
-  nav {
-
-    padding:
-      5px 8px 2px;
-
-  }
-
-  button {
-
-    padding:
-      6px 4px;
-
-  }
-
-  footer {
-
-    padding:
-      3px 8px 5px;
-
-  }
-
-  .standby-info {
-
-    bottom:
-      5%;
-
-  }
-
-}
-/* GIF STANDBY */
+/* -----------------------------
+   STANDBY GIF
+----------------------------- */
 
 #standbyGif {
   position: absolute;
+
   inset: 0;
 
   width: 100%;
@@ -735,6 +172,11 @@ footer {
   background: #020203;
 }
 
+
+/* -----------------------------
+   CAMERA NAME OVERLAY
+----------------------------- */
+
 .camera-overlay {
   position: absolute;
 
@@ -743,12 +185,17 @@ footer {
 
   z-index: 20;
 
-  padding: 4px 8px;
+  padding:
+    4px 8px;
 
-  border: 1px solid rgba(170, 110, 210, 0.35);
+  border:
+    1px solid
+    rgba(170, 110, 210, 0.35);
+
   border-radius: 5px;
 
-  background: rgba(5, 3, 8, 0.55);
+  background:
+    rgba(5, 3, 8, 0.55);
 
   color: #cda6e8;
 
@@ -756,8 +203,142 @@ footer {
   font-weight: 700;
 
   letter-spacing: 0.18em;
+
+  pointer-events: none;
 }
-/* DIAGNOSTICS DRAWER */
+
+
+/* -----------------------------
+   CAMERA NAVIGATION
+----------------------------- */
+
+#cameraNav {
+  display: grid;
+
+  flex: 0 0 auto;
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
+  gap: 5px;
+
+  padding:
+    6px 8px;
+
+  border-top:
+    1px solid #29232e;
+
+  background: #070609;
+}
+
+#cameraNav button {
+  min-width: 0;
+
+  padding:
+    7px 3px;
+
+  border:
+    1px solid #38303e;
+
+  border-radius: 6px;
+
+  background: #0c0b0e;
+
+  color: #817787;
+
+  font-family: inherit;
+
+  font-size: 9px;
+  font-weight: 700;
+
+  letter-spacing: 0.06em;
+
+  cursor: pointer;
+}
+
+#cameraNav button.active {
+  border-color:
+    rgba(183, 113, 226, 0.75);
+
+  background:
+    rgba(115, 67, 143, 0.24);
+
+  color: #d8b8ed;
+
+  box-shadow:
+    inset 0 0 10px
+    rgba(164, 94, 205, 0.12);
+}
+
+
+/* -----------------------------
+   STATUS
+----------------------------- */
+
+.controls {
+  display: flex;
+
+  flex: 0 0 auto;
+
+  align-items: center;
+  justify-content: center;
+
+  min-height: 25px;
+
+  padding:
+    4px 10px;
+
+  border-top:
+    1px solid #1e1a22;
+
+  background: #050406;
+}
+
+#status {
+  overflow: hidden;
+
+  color: #625a68;
+
+  font-size: 8px;
+
+  letter-spacing: 0.05em;
+
+  white-space: nowrap;
+
+  text-overflow: ellipsis;
+}
+
+
+/* -----------------------------
+   FOOTER
+----------------------------- */
+
+footer {
+  flex: 0 0 auto;
+
+  min-height: 20px;
+
+  padding:
+    5px 8px;
+
+  border-top:
+    1px solid #1b181e;
+
+  background: #040305;
+
+  color: #4f4854;
+
+  font-size: 8px;
+
+  text-align: center;
+
+  letter-spacing: 0.08em;
+}
+
+
+/* -----------------------------
+   DIAGNOSTICS DRAWER
+----------------------------- */
 
 #toolsDrawer {
   position: fixed;
@@ -779,10 +360,12 @@ footer {
     );
 
   border-bottom:
-    1px solid rgba(174, 113, 215, 0.6);
+    1px solid
+    rgba(174, 113, 215, 0.6);
 
   box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.65);
+    0 10px 30px
+    rgba(0, 0, 0, 0.65);
 
   transform:
     translateY(-105%);
@@ -795,6 +378,11 @@ footer {
   transform:
     translateY(0);
 }
+
+
+/* -----------------------------
+   DRAWER HANDLE
+----------------------------- */
 
 .tools-handle {
   width: 42px;
@@ -809,35 +397,41 @@ footer {
     rgba(197, 137, 235, 0.55);
 }
 
+
+/* -----------------------------
+   TOOLS HEADER
+----------------------------- */
+
 .tools-header {
   display: flex;
 
-  justify-content:
-    space-between;
-
-  align-items:
-    center;
+  align-items: center;
+  justify-content: space-between;
 
   margin-bottom:
     10px;
 
-  color:
-    #d7b7ef;
+  color: #d7b7ef;
 
-  font-size:
-    11px;
+  font-size: 11px;
 
-  letter-spacing:
-    0.12em;
+  letter-spacing: 0.12em;
+}
+
+.tools-header strong {
+  font-size: 11px;
 }
 
 .tools-header span {
-  color:
-    #827987;
+  color: #827987;
 
-  font-size:
-    9px;
+  font-size: 9px;
 }
+
+
+/* -----------------------------
+   DIAGNOSTIC GRID
+----------------------------- */
 
 .diag-grid {
   display: grid;
@@ -845,60 +439,52 @@ footer {
   grid-template-columns:
     repeat(3, 1fr);
 
-  gap:
-    6px;
+  gap: 6px;
 }
 
 .diag-grid div {
   min-width: 0;
 
-  padding:
-    7px;
+  padding: 7px;
 
   border:
     1px solid #3d3444;
 
-  border-radius:
-    7px;
+  border-radius: 7px;
 
-  background:
-    #0d0d10;
+  background: #0d0d10;
 }
 
 .diag-grid span {
   display: block;
 
-  margin-bottom:
-    3px;
+  margin-bottom: 3px;
 
-  color:
-    #766e7b;
+  color: #766e7b;
 
-  font-size:
-    8px;
+  font-size: 8px;
 
-  letter-spacing:
-    0.12em;
+  letter-spacing: 0.12em;
 }
 
 .diag-grid b {
   display: block;
 
-  overflow:
-    hidden;
+  overflow: hidden;
 
-  color:
-    #d5c4df;
+  color: #d5c4df;
 
-  font-size:
-    10px;
+  font-size: 10px;
 
-  white-space:
-    nowrap;
+  white-space: nowrap;
 
-  text-overflow:
-    ellipsis;
+  text-overflow: ellipsis;
 }
+
+
+/* -----------------------------
+   TOOL ACTION BUTTONS
+----------------------------- */
 
 .tool-actions {
   display: grid;
@@ -906,17 +492,184 @@ footer {
   grid-template-columns:
     repeat(3, 1fr);
 
-  gap:
-    6px;
+  gap: 6px;
 
-  margin-top:
-    9px;
+  margin-top: 9px;
 }
 
 .tool-actions button {
+  min-width: 0;
+
   padding:
     7px 4px;
 
-  font-size:
-    10px;
+  border:
+    1px solid #403747;
+
+  border-radius: 6px;
+
+  background: #0d0c10;
+
+  color: #95899d;
+
+  font-family: inherit;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 100ms ease,
+    border-color 100ms ease,
+    color 100ms ease,
+    box-shadow 100ms ease,
+    outline 100ms ease;
+}
+
+
+/* -----------------------------
+   SELECTED TOOL BUTTON
+
+   This is the button currently
+   selected by the Neural Band.
+----------------------------- */
+
+.tool-actions button.tool-focused {
+  outline:
+    2px solid #d7a7f4;
+
+  outline-offset:
+    1px;
+
+  border-color: #c78ae9;
+
+  background:
+    rgba(153, 83, 196, 0.32);
+
+  color: #f1dcff;
+
+  box-shadow:
+    0 0 12px
+    rgba(185, 116, 226, 0.45);
+}
+
+
+/* -----------------------------
+   BUTTON PRESS
+----------------------------- */
+
+.tool-actions button:active {
+  transform:
+    scale(0.97);
+}
+
+
+/* -----------------------------
+   ACCESSIBILITY / FOCUS
+----------------------------- */
+
+button:focus-visible {
+  outline:
+    2px solid #c88ceb;
+
+  outline-offset:
+    1px;
+}
+
+
+/* -----------------------------
+   SMALL DISPLAY ADJUSTMENTS
+----------------------------- */
+
+@media (
+  max-height: 400px
+) {
+
+  header {
+    min-height: 28px;
+
+    padding:
+      5px 10px;
+  }
+
+  #cameraNav {
+    padding:
+      4px 7px;
+  }
+
+  #cameraNav button {
+    padding:
+      5px 2px;
+  }
+
+  .controls {
+    min-height: 20px;
+
+    padding:
+      3px 8px;
+  }
+
+  footer {
+    min-height: 17px;
+
+    padding:
+      3px 6px;
+  }
+
+  #toolsDrawer {
+    padding:
+      5px 10px 9px;
+  }
+
+  .tools-handle {
+    margin-bottom:
+      5px;
+  }
+
+  .tools-header {
+    margin-bottom:
+      6px;
+  }
+
+  .diag-grid {
+    gap: 4px;
+  }
+
+  .diag-grid div {
+    padding: 5px;
+  }
+
+  .tool-actions {
+    gap: 4px;
+
+    margin-top:
+      6px;
+  }
+
+  .tool-actions button {
+    padding:
+      5px 3px;
+  }
+
+}
+
+
+/* -----------------------------
+   REDUCED MOTION
+----------------------------- */
+
+@media (
+  prefers-reduced-motion:
+  reduce
+) {
+
+  #toolsDrawer {
+    transition: none;
+  }
+
+  .tool-actions button {
+    transition: none;
+  }
+
 }
