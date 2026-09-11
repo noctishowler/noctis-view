@@ -1,3 +1,13 @@
+/* =========================================================
+   NOCTIS VIEW
+   Main application logic
+========================================================= */
+
+
+/* -----------------------------
+   CAMERA CONFIGURATION
+----------------------------- */
+
 const cameras = [
   'FORWARD',
   'RIGHT',
@@ -5,7 +15,19 @@ const cameras = [
   'LEFT'
 ];
 
+const cameraFeeds = {
+  FORWARD: null,
+  RIGHT: null,
+  REAR: null,
+  LEFT: null
+};
+
 let current = 0;
+
+
+/* -----------------------------
+   PRIMARY UI ELEMENTS
+----------------------------- */
 
 const nameEl =
   document.getElementById('cameraName');
@@ -26,22 +48,13 @@ const mode =
   document.getElementById('mode');
 
 
-/* -----------------------------
-   CAMERA FEEDS
------------------------------ */
-
-const cameraFeeds = {
-
-  FORWARD: null,
-  RIGHT: null,
-  REAR: null,
-  LEFT: null
-
-};
+/* =========================================================
+   CAMERA CONTROL
+========================================================= */
 
 
 /* -----------------------------
-   CAMERA SELECTION
+   SELECT CAMERA
 ----------------------------- */
 
 function setCamera(index) {
@@ -55,6 +68,7 @@ function setCamera(index) {
 
   nameEl.textContent =
     cameraName;
+
 
   buttons.forEach(
     (button, i) => {
@@ -101,9 +115,7 @@ function showStandby(cameraName) {
 
   feed.pause();
 
-  feed.removeAttribute(
-    'src'
-  );
+  feed.removeAttribute('src');
 
   feed.srcObject =
     null;
@@ -120,13 +132,11 @@ function showStandby(cameraName) {
   status.textContent =
     `${cameraName} feed unavailable`;
 
-  updateDiagnostics();
-
 }
 
 
 /* -----------------------------
-   VIDEO MODE
+   CONNECT VIDEO FEED
 ----------------------------- */
 
 function connectFeed(
@@ -169,9 +179,31 @@ function connectFeed(
         cameraName
       );
 
+      updateDiagnostics();
+
     });
 
 }
+
+
+/* -----------------------------
+   CAMERA BUTTONS
+----------------------------- */
+
+buttons.forEach(
+  (button, index) => {
+
+    button.addEventListener(
+      'click',
+      () => {
+
+        setCamera(index);
+
+      }
+    );
+
+  }
+);
 
 
 /* -----------------------------
@@ -186,34 +218,19 @@ feed.addEventListener(
       cameras[current]
     );
 
-  }
-);
-
-
-/* -----------------------------
-   CAMERA BUTTONS
------------------------------ */
-
-buttons.forEach(
-  (button, index) => {
-
-    button.addEventListener(
-      'click',
-      () => {
-
-        setCamera(
-          index
-        );
-
-      }
-    );
+    updateDiagnostics();
 
   }
 );
 
 
+/* =========================================================
+   DIAGNOSTICS
+========================================================= */
+
+
 /* -----------------------------
-   DIAGNOSTICS ELEMENTS
+   DIAGNOSTIC ELEMENTS
 ----------------------------- */
 
 const toolsDrawer =
@@ -247,6 +264,13 @@ const toolClose =
   document.getElementById('toolClose');
 
 
+const toolButtons = [
+  toolReconnect,
+  toolForward,
+  toolClose
+].filter(Boolean);
+
+
 let toolsOpen =
   false;
 
@@ -257,15 +281,8 @@ let toolsActionIndex =
   0;
 
 
-const toolButtons = [
-  toolReconnect,
-  toolForward,
-  toolClose
-].filter(Boolean);
-
-
 /* -----------------------------
-   DIAGNOSTICS STATUS
+   UPDATE DIAGNOSTICS
 ----------------------------- */
 
 function updateDiagnostics() {
@@ -306,9 +323,7 @@ function updateDiagnostics() {
   if (diagReady) {
 
     diagReady.textContent =
-      String(
-        feed.readyState
-      );
+      String(feed.readyState);
 
   }
 
@@ -334,7 +349,7 @@ function updateDiagnostics() {
 
 
 /* -----------------------------
-   TOOL BUTTON FOCUS
+   TOOL SELECTION
 ----------------------------- */
 
 function updateToolFocus() {
@@ -410,13 +425,12 @@ function previousToolAction() {
 
 
 /* -----------------------------
-   OPEN / CLOSE TOOLS
+   OPEN / CLOSE DIAGNOSTICS
 ----------------------------- */
 
 function openTools() {
 
   if (!toolsDrawer) return;
-
 
   toolsOpen =
     true;
@@ -444,7 +458,6 @@ function closeTools() {
 
   if (!toolsDrawer) return;
 
-
   toolsOpen =
     false;
 
@@ -463,16 +476,16 @@ function closeTools() {
 
 
 /* -----------------------------
-   TOOL BUTTON ACTIONS
+   TOOL ACTIONS
 ----------------------------- */
 
-if (toolClose) {
+if (toolReconnect) {
 
-  toolClose.addEventListener(
+  toolReconnect.addEventListener(
     'click',
     () => {
 
-      closeTools();
+      setCamera(current);
 
     }
   );
@@ -488,41 +501,30 @@ if (toolForward) {
 
       setCamera(0);
 
-      updateDiagnostics();
-
     }
   );
 
 }
 
 
-if (toolReconnect) {
+if (toolClose) {
 
-  toolReconnect.addEventListener(
+  toolClose.addEventListener(
     'click',
-    () => {
-
-      setCamera(
-        current
-      );
-
-      updateDiagnostics();
-
-    }
+    closeTools
   );
 
 }
 
 
 /* -----------------------------
-   DIAGNOSTIC UPDATES
+   DIAGNOSTIC REFRESH EVENTS
 ----------------------------- */
 
 addEventListener(
   'resize',
   updateDiagnostics
 );
-
 
 feed.addEventListener(
   'loadeddata',
@@ -545,12 +547,13 @@ feed.addEventListener(
 );
 
 
-/* -----------------------------
-   META DISPLAY CONTROLS
------------------------------ */
+/* =========================================================
+   META DISPLAY INPUT
+========================================================= */
+
 
 /*
- * MAIN VIEW
+ * MAIN CAMERA VIEW
  *
  * Swipe right:
  * FORWARD → RIGHT → REAR →
@@ -560,33 +563,31 @@ feed.addEventListener(
  * FORWARD → LEFT → REAR →
  * RIGHT → FORWARD
  *
- * Down = open diagnostics
+ * Swipe down:
+ * open diagnostics
  *
  *
  * DIAGNOSTICS
  *
- * Down = enter button row
- * Up   = leave button row
+ * Swipe down:
+ * enter action row
  *
+ * Swipe up:
+ * leave action row
+ * or close diagnostics
  *
- * BUTTON ROW
+ * Swipe left / right:
+ * move between actions
  *
- * Left / Right = choose button
- * Enter        = activate button
- *
- *
- * DIAGNOSTICS MAIN LEVEL
- *
- * Up = close diagnostics
+ * Enter:
+ * activate selected action
  */
 
 document.addEventListener(
   'keydown',
   event => {
 
-    switch (
-      event.key
-    ) {
+    switch (event.key) {
 
 
       case 'ArrowLeft':
@@ -693,13 +694,14 @@ document.addEventListener(
 );
 
 
-/* -----------------------------
-   TOUCH / POINTER CONTROLS
------------------------------ */
+/* =========================================================
+   TOUCH / POINTER INPUT
+========================================================= */
+
 
 /*
- * Retain phone/browser swipe
- * support for testing.
+ * Phone and desktop swipe support
+ * mirrors the Meta controls.
  */
 
 let pointerStartX =
@@ -756,10 +758,6 @@ addEventListener(
       Math.abs(dx)
     ) {
 
-      /*
-       * Swipe down
-       */
-
       if (dy > 0) {
 
         if (!toolsOpen) {
@@ -772,14 +770,7 @@ addEventListener(
 
         }
 
-      }
-
-
-      /*
-       * Swipe up
-       */
-
-      else {
+      } else {
 
         if (toolsActionMode) {
 
@@ -817,14 +808,6 @@ addEventListener(
 
       if (toolsOpen) {
 
-        /*
-         * Diagnostics navigation
-         * remains normal:
-         *
-         * swipe left  = previous
-         * swipe right = next
-         */
-
         if (toolsActionMode) {
 
           if (dx < 0) {
@@ -840,16 +823,6 @@ addEventListener(
         }
 
       } else {
-
-        /*
-         * CAMERA NAVIGATION
-         *
-         * Swipe left:
-         * move toward LEFT.
-         *
-         * Swipe right:
-         * move toward RIGHT.
-         */
 
         if (dx < 0) {
 
@@ -880,16 +853,17 @@ addEventListener(
 );
 
 
-/* -----------------------------
+/* =========================================================
    WAKE / RESUME
------------------------------ */
+========================================================= */
+
 
 /*
- * Whenever Noctis View wakes
- * or becomes visible again:
+ * Whenever Noctis View becomes
+ * visible again:
  *
  * close diagnostics
- * return to FORWARD
+ * reset to FORWARD
  */
 
 document.addEventListener(
@@ -910,6 +884,11 @@ document.addEventListener(
 );
 
 
+/*
+ * Also reset when the page
+ * is restored by the browser.
+ */
+
 addEventListener(
   'pageshow',
   () => {
@@ -924,9 +903,9 @@ addEventListener(
 );
 
 
-/* -----------------------------
+/* =========================================================
    STARTUP
------------------------------ */
+========================================================= */
 
 setCamera(0);
 
