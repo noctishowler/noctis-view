@@ -69,9 +69,60 @@
     </span>
   </section>
 
-  <footer>
-    ← → camera · swipe to switch views
-  </footer>
+<footer>
+  ← → camera · swipe down for tools
+</footer>
+
+<aside id="toolsDrawer" aria-hidden="true">
+
+  <div class="tools-handle"></div>
+
+  <div class="tools-header">
+    <strong>DIAGNOSTICS</strong>
+    <span>↑ swipe up to close</span>
+  </div>
+
+  <div class="diag-grid">
+
+    <div>
+      <span>CAMERA</span>
+      <b id="diagCamera">FORWARD</b>
+    </div>
+
+    <div>
+      <span>MODE</span>
+      <b id="diagMode">STANDBY</b>
+    </div>
+
+    <div>
+      <span>FEED</span>
+      <b id="diagFeed">NOT CONFIGURED</b>
+    </div>
+
+    <div>
+      <span>READY</span>
+      <b id="diagReady">0</b>
+    </div>
+
+    <div>
+      <span>VISIBLE</span>
+      <b id="diagVisible">YES</b>
+    </div>
+
+    <div>
+      <span>VIEWPORT</span>
+      <b id="diagViewport">--</b>
+    </div>
+
+  </div>
+
+  <div class="tool-actions">
+    <button id="toolReconnect" type="button">Reconnect</button>
+    <button id="toolForward" type="button">Reset Forward</button>
+    <button id="toolClose" type="button">Close</button>
+  </div>
+
+</aside>
 
 </main>
 
