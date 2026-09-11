@@ -1,132 +1,302 @@
 <!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport"
-      content="width=device-width,initial-scale=1,viewport-fit=cover">
 
-<title>Noctis View</title>
-<link rel="stylesheet" href="style.css">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  >
+
+  <title>Noctis View</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
 </head>
+
 
 <body>
 
-<main id="app">
+  <main id="app">
 
-  <header>
-    <span class="brand">NOCTIS VIEW</span>
-    <span class="mode" id="mode">STANDBY</span>
-  </header>
+    <!-- =========================
+         HEADER
+    ========================== -->
 
-  <section class="viewport" aria-live="polite">
+    <header>
 
-    <video
-      id="feed"
-      autoplay
-      muted
-      playsinline>
-    </video>
+      <span class="brand">
+        NOCTIS VIEW
+      </span>
 
-    <div id="standby">
-
-      <img
-        id="standbyGif"
-        src="IMG_1834.gif"
-        alt="Noctis View standby"
+      <span
+        class="mode"
+        id="mode"
       >
+        STANDBY
+      </span>
 
-      <div class="camera-overlay">
-        <span id="cameraName">FORWARD</span>
+    </header>
+
+
+    <!-- =========================
+         MAIN CAMERA VIEW
+    ========================== -->
+
+    <section
+      class="viewport"
+      aria-live="polite"
+    >
+
+      <video
+        id="feed"
+        autoplay
+        muted
+        playsinline
+      >
+      </video>
+
+
+      <div id="standby">
+
+        <img
+          id="standbyGif"
+          src="IMG_1834.gif"
+          alt="Noctis View standby"
+        >
+
+
+        <div class="camera-overlay">
+
+          <span id="cameraName">
+            FORWARD
+          </span>
+
+        </div>
+
       </div>
 
-    </div>
+    </section>
 
-  </section>
 
-  <nav id="cameraNav" aria-label="Camera selection">
+    <!-- =========================
+         CAMERA NAVIGATION
+    ========================== -->
 
-    <button data-camera="FORWARD" class="active">
-      Forward
-    </button>
+    <nav
+      id="cameraNav"
+      aria-label="Camera selection"
+    >
 
-    <button data-camera="RIGHT">
-      Right
-    </button>
+      <button
+        type="button"
+        data-camera="FORWARD"
+        class="active"
+      >
+        Forward
+      </button>
 
-    <button data-camera="REAR">
-      Rear
-    </button>
 
-    <button data-camera="LEFT">
-      Left
-    </button>
+      <button
+        type="button"
+        data-camera="RIGHT"
+      >
+        Right
+      </button>
 
-  </nav>
 
-  <section class="controls">
-    <span id="status">
-      Waiting for Raspberry Pi camera feeds
-    </span>
-  </section>
+      <button
+        type="button"
+        data-camera="REAR"
+      >
+        Rear
+      </button>
 
-<footer>
-  ← → camera · swipe down for tools
-</footer>
 
-<aside id="toolsDrawer" aria-hidden="true">
+      <button
+        type="button"
+        data-camera="LEFT"
+      >
+        Left
+      </button>
 
-  <div class="tools-handle"></div>
+    </nav>
 
-  <div class="tools-header">
-    <strong>DIAGNOSTICS</strong>
-    <span>↑ swipe up to close</span>
-  </div>
 
-  <div class="diag-grid">
+    <!-- =========================
+         STATUS
+    ========================== -->
 
-    <div>
-      <span>CAMERA</span>
-      <b id="diagCamera">FORWARD</b>
-    </div>
+    <section class="controls">
 
-    <div>
-      <span>MODE</span>
-      <b id="diagMode">STANDBY</b>
-    </div>
+      <span id="status">
+        Waiting for Raspberry Pi camera feeds
+      </span>
 
-    <div>
-      <span>FEED</span>
-      <b id="diagFeed">NOT CONFIGURED</b>
-    </div>
+    </section>
 
-    <div>
-      <span>READY</span>
-      <b id="diagReady">0</b>
-    </div>
 
-    <div>
-      <span>VISIBLE</span>
-      <b id="diagVisible">YES</b>
-    </div>
+    <!-- =========================
+         FOOTER / GESTURE HELP
+    ========================== -->
 
-    <div>
-      <span>VIEWPORT</span>
-      <b id="diagViewport">--</b>
-    </div>
+    <footer>
+      ← → camera · swipe down for tools
+    </footer>
 
-  </div>
 
-  <div class="tool-actions">
-    <button id="toolReconnect" type="button">Reconnect</button>
-    <button id="toolForward" type="button">Reset Forward</button>
-    <button id="toolClose" type="button">Close</button>
-  </div>
+    <!-- =========================
+         DIAGNOSTICS DRAWER
+    ========================== -->
 
-</aside>
+    <aside
+      id="toolsDrawer"
+      aria-hidden="true"
+    >
 
-</main>
+      <div class="tools-handle"></div>
 
-<script src="app.js"></script>
+
+      <div class="tools-header">
+
+        <strong>
+          DIAGNOSTICS
+        </strong>
+
+        <span>
+          ↑ swipe up to close
+        </span>
+
+      </div>
+
+
+      <!-- Diagnostic values -->
+
+      <div class="diag-grid">
+
+        <div>
+
+          <span>
+            CAMERA
+          </span>
+
+          <b id="diagCamera">
+            FORWARD
+          </b>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            MODE
+          </span>
+
+          <b id="diagMode">
+            STANDBY
+          </b>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            FEED
+          </span>
+
+          <b id="diagFeed">
+            NOT CONFIGURED
+          </b>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            READY
+          </span>
+
+          <b id="diagReady">
+            0
+          </b>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            VISIBLE
+          </span>
+
+          <b id="diagVisible">
+            YES
+          </b>
+
+        </div>
+
+
+        <div>
+
+          <span>
+            VIEWPORT
+          </span>
+
+          <b id="diagViewport">
+            --
+          </b>
+
+        </div>
+
+      </div>
+
+
+      <!-- Diagnostic actions -->
+
+      <div class="tool-actions">
+
+        <button
+          id="toolReconnect"
+          type="button"
+        >
+          Reconnect
+        </button>
+
+
+        <button
+          id="toolForward"
+          type="button"
+        >
+          Reset Forward
+        </button>
+
+
+        <button
+          id="toolClose"
+          type="button"
+        >
+          Close
+        </button>
+
+      </div>
+
+    </aside>
+
+  </main>
+
+
+  <!-- =========================
+       JAVASCRIPT
+  ========================== -->
+
+  <script src="app.js"></script>
 
 </body>
+
 </html>
