@@ -210,6 +210,138 @@ buttons.forEach(
   }
 );
 
+/* -----------------------------
+   DIAGNOSTICS
+----------------------------- */
+
+const toolsDrawer =
+  document.getElementById('toolsDrawer');
+
+const diagCamera =
+  document.getElementById('diagCamera');
+
+const diagMode =
+  document.getElementById('diagMode');
+
+const diagFeed =
+  document.getElementById('diagFeed');
+
+const diagReady =
+  document.getElementById('diagReady');
+
+const diagVisible =
+  document.getElementById('diagVisible');
+
+const diagViewport =
+  document.getElementById('diagViewport');
+
+let toolsOpen = false;
+
+
+function updateDiagnostics() {
+
+  const cameraName =
+    cameras[current];
+
+  diagCamera.textContent =
+    cameraName;
+
+  diagMode.textContent =
+    mode.textContent;
+
+  diagFeed.textContent =
+    cameraFeeds[cameraName]
+      ? 'CONFIGURED'
+      : 'NOT CONFIGURED';
+
+  diagReady.textContent =
+    String(feed.readyState);
+
+  diagVisible.textContent =
+    document.hidden
+      ? 'NO'
+      : 'YES';
+
+  diagViewport.textContent =
+    `${innerWidth}×${innerHeight}`;
+
+}
+
+
+function openTools() {
+
+  toolsOpen = true;
+
+  toolsDrawer.classList.add(
+    'open'
+  );
+
+  toolsDrawer.setAttribute(
+    'aria-hidden',
+    'false'
+  );
+
+  updateDiagnostics();
+
+}
+
+
+function closeTools() {
+
+  toolsOpen = false;
+
+  toolsDrawer.classList.remove(
+    'open'
+  );
+
+  toolsDrawer.setAttribute(
+    'aria-hidden',
+    'true'
+  );
+
+}
+
+
+document
+  .getElementById('toolClose')
+  .addEventListener(
+    'click',
+    closeTools
+  );
+
+
+document
+  .getElementById('toolForward')
+  .addEventListener(
+    'click',
+    () => {
+
+      setCamera(0);
+
+      updateDiagnostics();
+
+    }
+  );
+
+
+document
+  .getElementById('toolReconnect')
+  .addEventListener(
+    'click',
+    () => {
+
+      setCamera(current);
+
+      updateDiagnostics();
+
+    }
+  );
+
+
+addEventListener(
+  'resize',
+  updateDiagnostics
+);
 
 /* -----------------------------
    SWIPE CONTROLS
