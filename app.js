@@ -26,10 +26,9 @@ const mode =
   document.getElementById('mode');
 
 
-/*
- * Pi camera addresses will eventually
- * be added here.
- */
+/* -----------------------------
+   CAMERA FEEDS
+----------------------------- */
 
 const cameraFeeds = {
 
@@ -175,10 +174,9 @@ function connectFeed(
 }
 
 
-/*
- * If a stream dies after starting,
- * return to standby.
- */
+/* -----------------------------
+   VIDEO ERROR HANDLING
+----------------------------- */
 
 feed.addEventListener(
   'error',
@@ -215,7 +213,7 @@ buttons.forEach(
 
 
 /* -----------------------------
-   DIAGNOSTICS
+   DIAGNOSTICS ELEMENTS
 ----------------------------- */
 
 const toolsDrawer =
@@ -248,9 +246,27 @@ const toolForward =
 const toolClose =
   document.getElementById('toolClose');
 
+
 let toolsOpen =
   false;
 
+let toolsActionMode =
+  false;
+
+let toolsActionIndex =
+  0;
+
+
+const toolButtons = [
+  toolReconnect,
+  toolForward,
+  toolClose
+].filter(Boolean);
+
+
+/* -----------------------------
+   DIAGNOSTICS STATUS
+----------------------------- */
 
 function updateDiagnostics() {
 
@@ -317,6 +333,86 @@ function updateDiagnostics() {
 }
 
 
+/* -----------------------------
+   TOOL BUTTON FOCUS
+----------------------------- */
+
+function updateToolFocus() {
+
+  toolButtons.forEach(
+    (button, index) => {
+
+      button.classList.toggle(
+        'tool-focused',
+        toolsActionMode &&
+        index === toolsActionIndex
+      );
+
+    }
+  );
+
+}
+
+
+function enterToolActions() {
+
+  if (!toolButtons.length) return;
+
+  toolsActionMode =
+    true;
+
+  toolsActionIndex =
+    0;
+
+  updateToolFocus();
+
+}
+
+
+function leaveToolActions() {
+
+  toolsActionMode =
+    false;
+
+  updateToolFocus();
+
+}
+
+
+function nextToolAction() {
+
+  if (!toolButtons.length) return;
+
+  toolsActionIndex =
+    (toolsActionIndex + 1)
+    % toolButtons.length;
+
+  updateToolFocus();
+
+}
+
+
+function previousToolAction() {
+
+  if (!toolButtons.length) return;
+
+  toolsActionIndex =
+    (
+      toolsActionIndex
+      - 1
+      + toolButtons.length
+    )
+    % toolButtons.length;
+
+  updateToolFocus();
+
+}
+
+
+/* -----------------------------
+   OPEN / CLOSE TOOLS
+----------------------------- */
+
 function openTools() {
 
   if (!toolsDrawer) return;
@@ -324,6 +420,9 @@ function openTools() {
 
   toolsOpen =
     true;
+
+  toolsActionMode =
+    false;
 
   toolsDrawer.classList.add(
     'open'
@@ -333,6 +432,8 @@ function openTools() {
     'aria-hidden',
     'false'
   );
+
+  updateToolFocus();
 
   updateDiagnostics();
 
@@ -347,6 +448,8 @@ function closeTools() {
   toolsOpen =
     false;
 
+  leaveToolActions();
+
   toolsDrawer.classList.remove(
     'open'
   );
@@ -359,11 +462,19 @@ function closeTools() {
 }
 
 
+/* -----------------------------
+   TOOL BUTTON ACTIONS
+----------------------------- */
+
 if (toolClose) {
 
   toolClose.addEventListener(
     'click',
-    closeTools
+    () => {
+
+      closeTools();
+
+    }
   );
 
 }
@@ -403,16 +514,15 @@ if (toolReconnect) {
 }
 
 
+/* -----------------------------
+   DIAGNOSTIC UPDATES
+----------------------------- */
+
 addEventListener(
   'resize',
   updateDiagnostics
 );
 
-
-/*
- * Keep diagnostics updated
- * as the video state changes.
- */
 
 feed.addEventListener(
   'loadeddata',
@@ -440,12 +550,28 @@ feed.addEventListener(
 ----------------------------- */
 
 /*
- * Meta Display / Neural Band:
+ * Main view:
  *
- * ArrowLeft  = next camera
- * ArrowRight = previous camera
- * ArrowDown  = open tools
- * ArrowUp    = close tools
+ * Left  = next camera
+ * Right = previous camera
+ * Down  = open diagnostics
+ *
+ *
+ * Diagnostics view:
+ *
+ * Down = enter button row
+ * Up   = leave button row
+ *
+ *
+ * Button row:
+ *
+ * Left / Right = choose button
+ * Enter        = activate button
+ *
+ *
+ * If not in button row:
+ *
+ * Up = close diagnostics
  */
 
 document.addEventListener(
@@ -461,7 +587,15 @@ document.addEventListener(
 
         event.preventDefault();
 
-        if (!toolsOpen) {
+        if (toolsOpen) {
+
+          if (toolsActionMode) {
+
+            previousToolAction();
+
+          }
+
+        } else {
 
           setCamera(
             current + 1
@@ -476,7 +610,15 @@ document.addEventListener(
 
         event.preventDefault();
 
-        if (!toolsOpen) {
+        if (toolsOpen) {
+
+          if (toolsActionMode) {
+
+            nextToolAction();
+
+          }
+
+        } else {
 
           setCamera(
             current - 1
@@ -495,6 +637,10 @@ document.addEventListener(
 
           openTools();
 
+        } else if (!toolsActionMode) {
+
+          enterToolActions();
+
         }
 
         break;
@@ -504,9 +650,32 @@ document.addEventListener(
 
         event.preventDefault();
 
-        if (toolsOpen) {
+        if (toolsActionMode) {
+
+          leaveToolActions();
+
+        } else if (toolsOpen) {
 
           closeTools();
+
+        }
+
+        break;
+
+
+      case 'Enter':
+
+        event.preventDefault();
+
+        if (
+          toolsOpen &&
+          toolsActionMode &&
+          toolButtons[toolsActionIndex]
+        ) {
+
+          toolButtons[
+            toolsActionIndex
+          ].click();
 
         }
 
@@ -523,8 +692,8 @@ document.addEventListener(
 ----------------------------- */
 
 /*
- * Keep browser / phone swipe
- * controls available for testing.
+ * Retain phone/browser swipe
+ * support for testing.
  */
 
 let pointerStartX =
@@ -571,9 +740,9 @@ addEventListener(
       - pointerStartY;
 
 
-    /*
-     * Vertical swipe.
-     */
+    /* -------------------------
+       VERTICAL SWIPE
+    ------------------------- */
 
     if (
       Math.abs(dy) > 45 &&
@@ -581,17 +750,36 @@ addEventListener(
       Math.abs(dx)
     ) {
 
+      /*
+       * Swipe down
+       */
+
       if (dy > 0) {
 
         if (!toolsOpen) {
 
           openTools();
 
+        } else if (!toolsActionMode) {
+
+          enterToolActions();
+
         }
 
-      } else {
+      }
 
-        if (toolsOpen) {
+
+      /*
+       * Swipe up
+       */
+
+      else {
+
+        if (toolsActionMode) {
+
+          leaveToolActions();
+
+        } else if (toolsOpen) {
 
           closeTools();
 
@@ -611,36 +799,66 @@ addEventListener(
     }
 
 
-    /*
-     * Horizontal swipe.
-     *
-     * Continuous looping:
-     *
-     * FORWARD
-     * RIGHT
-     * REAR
-     * LEFT
-     * FORWARD
-     */
+    /* -------------------------
+       HORIZONTAL SWIPE
+    ------------------------- */
 
     if (
-      !toolsOpen &&
       Math.abs(dx) > 45 &&
       Math.abs(dx) >
       Math.abs(dy)
     ) {
 
-      if (dx < 0) {
+      if (toolsOpen) {
 
-        setCamera(
-          current + 1
-        );
+        if (toolsActionMode) {
+
+          if (dx < 0) {
+
+            nextToolAction();
+
+          } else {
+
+            previousToolAction();
+
+          }
+
+        }
 
       } else {
 
-        setCamera(
-          current - 1
-        );
+        /*
+         * Swipe left:
+         *
+         * FORWARD
+         * RIGHT
+         * REAR
+         * LEFT
+         * FORWARD...
+         */
+
+        if (dx < 0) {
+
+          setCamera(
+            current + 1
+          );
+
+        }
+
+
+        /*
+         * Swipe right:
+         *
+         * reverse loop
+         */
+
+        else {
+
+          setCamera(
+            current - 1
+          );
+
+        }
 
       }
 
@@ -661,14 +879,6 @@ addEventListener(
    WAKE / RESUME
 ----------------------------- */
 
-/*
- * When the web app becomes
- * visible again:
- *
- * close tools
- * return to Forward
- */
-
 document.addEventListener(
   'visibilitychange',
   () => {
@@ -686,11 +896,6 @@ document.addEventListener(
   }
 );
 
-
-/*
- * Also reset when the browser
- * restores the page.
- */
 
 addEventListener(
   'pageshow',
