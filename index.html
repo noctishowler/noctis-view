@@ -1,22 +1,44 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Noctis View</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <main id="app">
-  <header><span class="brand">NOCTIS VIEW</span><span class="mode">TEST PATTERN</span></header>
+
+  <header>
+    <span class="brand">NOCTIS VIEW</span>
+    <span class="mode">EXTERNAL CAMERA MODE</span>
+  </header>
+
   <section class="viewport" aria-live="polite">
     <video id="feed" autoplay muted playsinline></video>
-    <div id="placeholder"><div class="reticle"></div><strong id="cameraName">FORWARD</strong><span>No camera connected</span></div>
+
+    <div id="placeholder">
+      <div class="reticle"></div>
+      <strong id="cameraName">FORWARD</strong>
+      <span>No external camera connected</span>
+    </div>
   </section>
+
   <nav id="cameraNav" aria-label="Camera selection">
-    <button data-camera="FORWARD" class="active">Forward</button><button data-camera="RIGHT">Right</button><button data-camera="REAR">Rear</button><button data-camera="LEFT">Left</button>
+    <button data-camera="FORWARD" class="active">Forward</button>
+    <button data-camera="RIGHT">Right</button>
+    <button data-camera="REAR">Rear</button>
+    <button data-camera="LEFT">Left</button>
   </nav>
-  <section class="controls"><button id="testVideo">Test video</button><span id="status">Checks</span></section>
-  <footer>← → camera · ↑ ↓ controls · select to activate</footer>
+
+  <section class="controls">
+    <span id="status">Waiting for Raspberry Pi camera feeds</span>
+  </section>
+
+  <footer>← → camera · swipe to switch views</footer>
+
 </main>
+
 <script src="app.js"></script>
-</body></html>
+</body>
+</html>
