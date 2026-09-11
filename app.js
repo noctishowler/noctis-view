@@ -92,6 +92,13 @@ function setCamera(index) {
 
   }
 
+
+  if (typeof updateDiagnostics === 'function') {
+
+    updateDiagnostics();
+
+  }
+
 }
 
 
@@ -121,6 +128,13 @@ function showStandby(cameraName) {
 
   status.textContent =
     `${cameraName} feed unavailable`;
+
+
+  if (typeof updateDiagnostics === 'function') {
+
+    updateDiagnostics();
+
+  }
 
 }
 
@@ -158,6 +172,8 @@ function connectFeed(
 
       status.textContent =
         `${cameraName} camera active`;
+
+      updateDiagnostics();
 
     })
 
@@ -210,6 +226,7 @@ buttons.forEach(
   }
 );
 
+
 /* -----------------------------
    DIAGNOSTICS
 ----------------------------- */
@@ -235,42 +252,91 @@ const diagVisible =
 const diagViewport =
   document.getElementById('diagViewport');
 
-let toolsOpen = false;
+const toolReconnect =
+  document.getElementById('toolReconnect');
+
+const toolForward =
+  document.getElementById('toolForward');
+
+const toolClose =
+  document.getElementById('toolClose');
+
+let toolsOpen =
+  false;
 
 
 function updateDiagnostics() {
 
+  if (!toolsDrawer) return;
+
+
   const cameraName =
     cameras[current];
 
-  diagCamera.textContent =
-    cameraName;
 
-  diagMode.textContent =
-    mode.textContent;
+  if (diagCamera) {
 
-  diagFeed.textContent =
-    cameraFeeds[cameraName]
-      ? 'CONFIGURED'
-      : 'NOT CONFIGURED';
+    diagCamera.textContent =
+      cameraName;
 
-  diagReady.textContent =
-    String(feed.readyState);
+  }
 
-  diagVisible.textContent =
-    document.hidden
-      ? 'NO'
-      : 'YES';
 
-  diagViewport.textContent =
-    `${innerWidth}×${innerHeight}`;
+  if (diagMode) {
+
+    diagMode.textContent =
+      mode.textContent;
+
+  }
+
+
+  if (diagFeed) {
+
+    diagFeed.textContent =
+      cameraFeeds[cameraName]
+        ? 'CONFIGURED'
+        : 'NOT CONFIGURED';
+
+  }
+
+
+  if (diagReady) {
+
+    diagReady.textContent =
+      String(
+        feed.readyState
+      );
+
+  }
+
+
+  if (diagVisible) {
+
+    diagVisible.textContent =
+      document.hidden
+        ? 'NO'
+        : 'YES';
+
+  }
+
+
+  if (diagViewport) {
+
+    diagViewport.textContent =
+      `${innerWidth}×${innerHeight}`;
+
+  }
 
 }
 
 
 function openTools() {
 
-  toolsOpen = true;
+  if (!toolsDrawer) return;
+
+
+  toolsOpen =
+    true;
 
   toolsDrawer.classList.add(
     'open'
@@ -288,7 +354,11 @@ function openTools() {
 
 function closeTools() {
 
-  toolsOpen = false;
+  if (!toolsDrawer) return;
+
+
+  toolsOpen =
+    false;
 
   toolsDrawer.classList.remove(
     'open'
@@ -302,17 +372,19 @@ function closeTools() {
 }
 
 
-document
-  .getElementById('toolClose')
-  .addEventListener(
+if (toolClose) {
+
+  toolClose.addEventListener(
     'click',
     closeTools
   );
 
+}
 
-document
-  .getElementById('toolForward')
-  .addEventListener(
+
+if (toolForward) {
+
+  toolForward.addEventListener(
     'click',
     () => {
 
@@ -323,25 +395,57 @@ document
     }
   );
 
+}
 
-document
-  .getElementById('toolReconnect')
-  .addEventListener(
+
+if (toolReconnect) {
+
+  toolReconnect.addEventListener(
     'click',
     () => {
 
-      setCamera(current);
+      setCamera(
+        current
+      );
 
       updateDiagnostics();
 
     }
   );
 
+}
+
 
 addEventListener(
   'resize',
   updateDiagnostics
 );
+
+
+/* Keep diagnostics updated
+ * while video state changes.
+ */
+
+feed.addEventListener(
+  'loadeddata',
+  updateDiagnostics
+);
+
+feed.addEventListener(
+  'playing',
+  updateDiagnostics
+);
+
+feed.addEventListener(
+  'waiting',
+  updateDiagnostics
+);
+
+feed.addEventListener(
+  'stalled',
+  updateDiagnostics
+);
+
 
 /* -----------------------------
    SWIPE CONTROLS
@@ -373,7 +477,8 @@ addEventListener(
   event => {
 
     if (
-      pointerStartX === null
+      pointerStartX === null ||
+      pointerStartY === null
     ) return;
 
 
@@ -387,10 +492,47 @@ addEventListener(
 
 
     /*
-     * Ignore mostly vertical gestures.
+     * Vertical gestures:
+     *
+     * swipe down = open tools
+     * swipe up   = close tools
      */
 
     if (
+      Math.abs(dy) > 45 &&
+      Math.abs(dy) >
+      Math.abs(dx)
+    ) {
+
+      if (dy > 0) {
+
+        openTools();
+
+      } else {
+
+        closeTools();
+
+      }
+
+
+      pointerStartX =
+        null;
+
+      pointerStartY =
+        null;
+
+      return;
+
+    }
+
+
+    /*
+     * Horizontal camera switching
+     * is disabled while tools are open.
+     */
+
+    if (
+      !toolsOpen &&
       Math.abs(dx) > 45 &&
       Math.abs(dx) >
       Math.abs(dy)
@@ -457,9 +599,13 @@ document.addEventListener(
 
     if (!document.hidden) {
 
+      closeTools();
+
       setCamera(0);
 
     }
+
+    updateDiagnostics();
 
   }
 );
@@ -474,7 +620,11 @@ addEventListener(
   'pageshow',
   () => {
 
+    closeTools();
+
     setCamera(0);
+
+    updateDiagnostics();
 
   }
 );
@@ -485,3 +635,5 @@ addEventListener(
 ----------------------------- */
 
 setCamera(0);
+
+updateDiagnostics();
